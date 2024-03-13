@@ -145,8 +145,29 @@ class GreedyBustersAgent(BustersAgent):
              if livingGhosts[i+1]]
 
 
-
-
         "*** YOUR CODE HERE ***"
+        #Check distance
+        #If move is the will create the smallest distance, take the move
+        bestdistance = float('inf')
+        bestghostpos = None
 
+        #Find the closest ghost
+        for ghost in livingGhostPositionDistributions:
+            livingGhostsPosition = ghost.argMax() #Greedily assume its in the most likely spot
+            ghostdistance = self.distancer.getDistance(pacmanPosition, livingGhostsPosition)
+            #If ghost is closest found, update values
+            if ghostdistance < bestdistance:
+                bestdistance = ghostdistance
+                bestghostpos = livingGhostsPosition
+            
+        bestmove = None
+        bestmovedistance = float('inf')
+        for move in legal:
+            successorPosition = Actions.getSuccessor(pacmanPosition, move)
+            distance = self.distancer.getDistance(successorPosition, bestghostpos)
+            if distance < bestmovedistance:
+                bestmove = move
+                bestmovedistance = distance
+
+        return bestmove
 

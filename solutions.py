@@ -145,6 +145,25 @@ def elapseTime(self, gameState):
     The transition model is not entirely stationary: it may depend on
     Pacman's current position. However, this is not a problem, as Pacman's
     current position is known.
+
+    newPostDist[p] = Pr( ghost is at newpos at time t + 1 | ghost is at position oldPos at time t )
     """
     "*** YOUR CODE HERE ***"
+
+    newBeliefs = util.Counter()
+
+    #For each ghost position
+    for oldPos in self.beliefs:
+        #Get distribution of where ghost can move
+        newPosDist = self.getPositionDistribution(gameState, oldPos)
+        #For each new position probablity
+        for newPos, prob in newPosDist.items():
+            #Weighted probability of old beliefs * new position probability
+            newBeliefs[newPos] += prob * self.beliefs[oldPos]
+
+    # Update the beliefs
+    self.beliefs = newBeliefs
+    
+    
  
+    self.beliefs.normalize()
